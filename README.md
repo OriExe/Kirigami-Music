@@ -9,6 +9,6 @@ It aims to allows users to
 - Download music from their library onto their pc, where the system shall only
   play the song locally unless it's deleted.
 
-Currently the project exists contains a tutorial project from the kde
-documentation
+Current progress as of 13/09/2026
+![Kirigami app showing sidebar](Current progress.png)
 

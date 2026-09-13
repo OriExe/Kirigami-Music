@@ -4,8 +4,10 @@ import signal
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtCore import QUrl
 from PySide6.QtQml import QQmlApplicationEngine
+from ApiCalls import ApiCalls
 
 
+##For initilising the app
 def main():
     """Initializes and manages the application execution"""
     app = QGuiApplication(sys.argv)
