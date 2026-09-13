@@ -10,5 +10,5 @@ It aims to allows users to
   play the song locally unless it's deleted.
 
 Current progress as of 13/09/2026
-![Kirigami app showing sidebar](Current progress.png)
+![Kirigami app showing sidebar](https://github.com/OriExe/Kirigami-Music/blob/main/Current%20progress.png?raw=true)
 
