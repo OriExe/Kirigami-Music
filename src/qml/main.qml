@@ -34,9 +34,19 @@ Kirigami.ApplicationWindow {
     Component {
         id: initPage
 
-        Kirigami.Page {
+        Kirigami.ScrollablePage {
             title: qsTr("Kirigami Music player")
 
+            // Makes an album cover 
+            function createAlbumCover() {
+                        var component2 = Qt.createComponent("Sprite.qml");
+                        var sprite = component2.createObject(albumRow);
+
+                        if (sprite == null) {
+                            // Error Handling
+                            console.log("Error creating object");
+                        }
+                }
             ApiCalls {
                 id: apicalls
 
@@ -44,33 +54,30 @@ Kirigami.ApplicationWindow {
             }
 
             ColumnLayout {
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                }
-                RowLayout {
-                    Layout.fillWidth: true
+                anchors.fill: parent
+                Controls.Button {
+                    text: qsTr("Send Api request")
 
-                    Controls.Button {
-                        text: qsTr("Send Api request")
-
-                        onClicked: formattedText.text = apicalls.getAllSongs()
+                    onClicked: formattedText.text = apicalls.getAllAlbums()
                     }
-                } 
-
+                Flow {
+                    id: albumRow
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    spacing: Kirigami.Units.largeSpacing
+                    }
                 Text {
                     id: formattedText
-
+                  
                     textFormat: Text.RichText
                     wrapMode: Text.WordWrap
-                    text: sourceArea.text
-                    color: "white"
 
                     Layout.fillWidth: true
                     Layout.minimumHeight: Kirigami.Units.gridUnit * 5
+
                 }
             }
+           
     	}
     }
 }

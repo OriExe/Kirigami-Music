@@ -9,9 +9,10 @@ QML_IMPORT_MAJOR_VERSION = 1
 @QmlElement
 class ApiCalls(QObject):
     
-    hostserver = "https://demo.navidrome.org/"
+    hostserver = "https://demo.navidrome.org"
     username = "demo"
     password = "demo"
+    CLIENT = "KirigamiMusic"
     """Calls the opensonic api"""
 
     sourceTextChanged = Signal()
@@ -28,11 +29,10 @@ class ApiCalls(QObject):
     def sourceText(self, val):
         self._source_text = val
         self.sourceTextChanged.emit()
-
-    @Slot(result=str)
-    def getAllSongs(self):
-        url = f"{self.hostserver}/rest/getAlbumList.view?type=random&u={self.username}&p={self.password}&v=1.13.0&c=AwesomeClientName&f=json"
         
+    @Slot(result=str)
+    def getAllAlbums(self):
+        url = f"{self.hostserver}/rest/getAlbumList.view?type=alphabeticalByName&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
         response = requests.get(url)
         print(response)
         if response.status_code == 200:
@@ -40,4 +40,8 @@ class ApiCalls(QObject):
             return json.dumps(apidata)
         else:
             print("Failed to retrieve data",response.status_code)
-            return response.status_code
+            return json.dumps(response.status_code)
+        
+    def getImageOfAlbum(self, imageId):
+        url = f"{self.hostserver}/rest/getCoverArt.view?id={imageId}&u={self.username}p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
+        
