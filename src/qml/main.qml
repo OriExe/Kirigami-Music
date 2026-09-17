@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import QtQuick.Controls as Controls
 import org.kde.kirigami as Kirigami
 import oriexe.KirigamiMusicPLayer 1.0
-
 Kirigami.ApplicationWindow {
     id: root
 
@@ -36,21 +35,21 @@ Kirigami.ApplicationWindow {
 
         Kirigami.ScrollablePage {
             title: qsTr("Kirigami Music player")
+            objectName: "albumPage"
+            function createSpriteObjects(name) {
+                var component = Qt.createComponent("Sprite.qml");
+                var sprite = component.createObject(albumRow);
+                sprite.albumTextName = name
+                //sprite.imagePath = imagePath
 
-            // Makes an album cover 
-            function createAlbumCover() {
-                        var component2 = Qt.createComponent("Sprite.qml");
-                        var sprite = component2.createObject(albumRow);
-
-                        if (sprite == null) {
-                            // Error Handling
-                            console.log("Error creating object");
-                        }
+                if (sprite == null) {
+                    // Error Handling
+                    console.error("Error creating object");
                 }
+            }
             ApiCalls {
                 id: apicalls
-
-                sourceText: sourceArea.text 
+                sourceText: sourceArea.text //How can I bind a signal in python to the function
             }
 
             ColumnLayout {
@@ -58,8 +57,9 @@ Kirigami.ApplicationWindow {
                 Controls.Button {
                     text: qsTr("Send Api request")
 
-                    onClicked: formattedText.text = apicalls.getAllAlbums()
-                    }
+                    onClicked: apicalls.getAllAlbums()
+                }
+                    
                 Flow {
                     id: albumRow
                     Layout.fillHeight: true

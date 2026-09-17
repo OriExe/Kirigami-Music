@@ -4,6 +4,7 @@ import signal
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtCore import QUrl
 from PySide6.QtQml import QQmlApplicationEngine
+import globalValues
 from ApiCalls import ApiCalls
 
 
@@ -11,7 +12,7 @@ from ApiCalls import ApiCalls
 def main():
     """Initializes and manages the application execution"""
     app = QGuiApplication(sys.argv)
-    engine = QQmlApplicationEngine()
+    globalValues.engine = QQmlApplicationEngine()
 
     """Needed to close the app with Ctrl+C"""
     signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -22,9 +23,9 @@ def main():
 
     base_path = os.path.abspath(os.path.dirname(__file__))
     url = QUrl(f"file://{base_path}/qml/main.qml")
-    engine.load(url)
+    globalValues.engine.load(url)
 
-    if len(engine.rootObjects()) == 0:
+    if len(globalValues.engine.rootObjects()) == 0:
         quit()
 
     app.exec()
@@ -32,3 +33,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

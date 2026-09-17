@@ -1,7 +1,8 @@
 from PySide6.QtCore import QObject, Signal, Slot, Property
-from PySide6.QtQml import QmlElement
+from PySide6.QtQml import QmlElement, QQmlComponent
 import requests
 import json
+import globalValues
 
 QML_IMPORT_NAME = "oriexe.KirigamiMusicPLayer"
 QML_IMPORT_MAJOR_VERSION = 1
@@ -36,8 +37,11 @@ class ApiCalls(QObject):
         response = requests.get(url)
         print(response)
         if response.status_code == 200:
-            apidata = response.json()
-            return json.dumps(apidata)
+            print(response.json()["subsonic-response"]["albumList"]["album"])
+            print(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
+            window = globalValues.engine.rootObjects()[0]
+            window.findChild(QObject, "albumPage").createSpriteObjects(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
+            return json.dumps(response.json())
         else:
             print("Failed to retrieve data",response.status_code)
             return json.dumps(response.status_code)
