@@ -37,15 +37,16 @@ class ApiCalls(QObject):
         response = requests.get(url)
         print(response)
         if response.status_code == 200:
-            print(response.json()["subsonic-response"]["albumList"]["album"])
-            print(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
+            #print(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
             window = globalValues.engine.rootObjects()[0]
-            window.findChild(QObject, "albumPage").createSpriteObjects(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
+            albumPageFunction = window.findChild(QObject, "albumPage")
+            jsonResponse = response.json()
+            ##Get album name and Image
+            for x in jsonResponse["subsonic-response"]["albumList"]["album"]:
+                imageUrl = f"{self.hostserver}/rest/getCoverArt.view?id={x["coverArt"]}&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
+                print(imageUrl)
+                albumPageFunction.createSpriteObjects(x["name"], imageUrl)
             return json.dumps(response.json())
         else:
             print("Failed to retrieve data",response.status_code)
             return json.dumps(response.status_code)
-        
-    def getImageOfAlbum(self, imageId):
-        url = f"{self.hostserver}/rest/getCoverArt.view?id={imageId}&u={self.username}p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
-        

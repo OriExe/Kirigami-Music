@@ -36,12 +36,11 @@ Kirigami.ApplicationWindow {
         Kirigami.ScrollablePage {
             title: qsTr("Kirigami Music player")
             objectName: "albumPage"
-            function createSpriteObjects(name) {
+            function createSpriteObjects(name, imagePath) {
                 var component = Qt.createComponent("Sprite.qml");
                 var sprite = component.createObject(albumRow);
                 sprite.albumTextName = name
-                //sprite.imagePath = imagePath
-
+                sprite.imagePath = imagePath
                 if (sprite == null) {
                     // Error Handling
                     console.error("Error creating object");
