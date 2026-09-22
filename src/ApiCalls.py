@@ -22,15 +22,6 @@ class ApiCalls(QObject):
         super().__init__()
         self._source_text = _source_text
 
-    @Property(str, notify=sourceTextChanged)
-    def sourceText(self):
-        return self._source_text
-
-    @sourceText.setter
-    def sourceText(self, val):
-        self._source_text = val
-        self.sourceTextChanged.emit()
-        
     @Slot(result=str)
     def getAllAlbums(self):
         url = f"{self.hostserver}/rest/getAlbumList.view?type=alphabeticalByName&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"

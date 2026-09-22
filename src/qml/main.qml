@@ -8,12 +8,13 @@ Kirigami.ApplicationWindow {
 
     title: qsTr("Kirigami Music player")
 
-    minimumWidth: Kirigami.Units.gridUnit * 50
-    minimumHeight: Kirigami.Units.gridUnit * 40
+    //minimumWidth: Kirigami.Units.gridUnit * 50
+    //minimumHeight: Kirigami.Units.gridUnit * 40
     width: minimumWidth
     height: minimumHeight
 
     pageStack.initialPage: initPage
+    pageStack.columnView.columnResizeMode: Kirigami.ColumnView.SingleColumn
     globalDrawer: Kirigami.GlobalDrawer {
         modal: false;
         collapsible: true;
@@ -32,10 +33,10 @@ Kirigami.ApplicationWindow {
 
     Component {
         id: initPage
-
         Kirigami.ScrollablePage {
             title: qsTr("Kirigami Music player")
             objectName: "albumPage"
+            //Function to load album data
             function createSpriteObjects(name, imagePath) {
                 var component = Qt.createComponent("Sprite.qml");
                 var sprite = component.createObject(albumRow);
@@ -48,7 +49,6 @@ Kirigami.ApplicationWindow {
             }
             ApiCalls {
                 id: apicalls
-                sourceText: sourceArea.text //How can I bind a signal in python to the function
             }
 
             ColumnLayout {
@@ -57,6 +57,11 @@ Kirigami.ApplicationWindow {
                     text: qsTr("Send Api request")
 
                     onClicked: apicalls.getAllAlbums()
+                }
+                Controls.Button {
+                    text: qsTr("Load Another Page")
+
+                    onClicked: pageStack.push(Qt.resolvedUrl("songView.qml")) //Why does adding layers fix this
                 }
                     
                 Flow {
