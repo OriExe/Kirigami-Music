@@ -7,7 +7,6 @@ from PySide6.QtQml import QQmlApplicationEngine
 import globalValues
 from ApiCalls import ApiCalls
 
-
 ##For initilising the app
 def main():
     """Initializes and manages the application execution"""

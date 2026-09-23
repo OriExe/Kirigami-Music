@@ -4,6 +4,7 @@ import requests
 import json
 import globalValues
 
+
 QML_IMPORT_NAME = "oriexe.KirigamiMusicPLayer"
 QML_IMPORT_MAJOR_VERSION = 1
 
@@ -16,11 +17,6 @@ class ApiCalls(QObject):
     CLIENT = "KirigamiMusic"
     """Calls the opensonic api"""
 
-    sourceTextChanged = Signal()
-
-    def __init__(self, _source_text=""):
-        super().__init__()
-        self._source_text = _source_text
 
     @Slot(result=str)
     def getAllAlbums(self):

@@ -15,18 +15,33 @@ Kirigami.ApplicationWindow {
 
     pageStack.initialPage: initPage
     pageStack.columnView.columnResizeMode: Kirigami.ColumnView.SingleColumn
+
+    property bool albumSelected: true
+    property bool songSelected: false
+
+    function accessSongs()
+    {
+        albumSelected = false
+        songSelected = true 
+    }
     globalDrawer: Kirigami.GlobalDrawer {
         modal: false;
         collapsible: true;
         collapsed: false;
         actions: [
            Kirigami.Action {
+                id: albumID
                text: "Albums"
+               checked: albumSelected
                icon.name: "media-optical-audio-symbolic"
            },
             Kirigami.Action {
+                id: songID
                text: "Songs"
                icon.name: "library-music-symbolic"
+               checked: songSelected
+               displayHint: Kirigami.DisplayHint.KeepVisible
+               onTriggered: accessSongs()
            }
         ]
     }
