@@ -1,5 +1,6 @@
 from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtQml import QmlElement, QQmlComponent
+from io import BytesIO
 import requests
 import urllib.request
 import json
@@ -45,9 +46,11 @@ class ApiCalls(QObject):
             self.cachePath = os.getenv("XDG_CACHE_HOME") or os.path.join(os.getenv("HOME"),".cache")
             self.cachePath = self.cachePath + "/oriexe.Kirigami"
         print(albumLink)
-        return 
         filePath = self.cachePath + albumID + ".png"
-        urllib.request.urlretrieve(albumLink,filePath)
-            
+        r = requests.get('https://api.github.com/events').content
+        image = BytesIO(r)
+        file = open(filePath,"rwb")
+        file.write(image)
+
         return filePath
             
