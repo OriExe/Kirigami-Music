@@ -8,7 +8,7 @@ Kirigami.ScrollablePage {
             title: qsTr("Kirigami Music player")
             objectName: "albumPage"
             //Function to load album data
-            function createSpriteObjects(name, imagePath) {
+            function createAlbumObjects(name, imagePath) {
                 var component = Qt.createComponent("Sprite.qml");
                 var sprite = component.createObject(albumRow);
                 sprite.albumTextName = name
@@ -51,6 +51,7 @@ Kirigami.ScrollablePage {
                     Layout.minimumHeight: Kirigami.Units.gridUnit * 5
 
                 }
+                Component.onCompleted: apicalls.main()
             }
            
     	}

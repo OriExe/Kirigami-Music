@@ -20,11 +20,25 @@ class ApiCalls(QObject):
     """Calls the opensonic api"""
     cachePath = ""
     
+    ##Called from album View qml
+    @Slot()
+    def main(self):
+        print(self.cachePath)
+        ##Set and make the cache path for the app
+        if self.cachePath == "":
+            self.cachePath = os.getenv("XDG_CACHE_HOME") or os.path.join(os.getenv("HOME"),".cache")
+            self.cachePath = os.path.join(self.cachePath,"oriexe-Kirigami")
+            print(self.cachePath)
+        if not os.path.exists(self.cachePath):
+            print("Cache path created")
+            os.makedirs(self.cachePath)
+        print("Cache variables set")
+    
     @Slot(result=str)
     def getAllAlbums(self):
         url = f"{self.hostserver}/rest/getAlbumList.view?type=alphabeticalByName&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
         response = requests.get(url)
-        ##Run sucessfully 
+        ##Get Albums from api
         if response.status_code == 200:
             #print(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
             window = globalValues.engine.rootObjects()[0]
@@ -33,24 +47,27 @@ class ApiCalls(QObject):
             ##Get album name and Image
             for x in jsonResponse["subsonic-response"]["albumList"]["album"]:
                 imageUrl = f"{self.hostserver}/rest/getCoverArt.view?id={x["coverArt"]}&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
-                print(imageUrl)
-                albumPageFunction.createSpriteObjects(x["name"], self.saveToCache(x["name"],x["coverArt"] ,imageUrl))
+                imagePath = ""
+                if not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".png"):
+                    print("Image doesn't exist creating it")
+                    imagePath = self.saveToCache(x["name"],x["coverArt"] ,imageUrl)
+                else:
+                    imagePath = self.cachePath + "/" + x["coverArt"] + ".png"
+                #print(imageUrl)
+                albumPageFunction.createAlbumObjects(x["name"], imagePath)
             return json.dumps(response.json())
         ##Run fails
         else:
             print("Failed to retrieve data",response.status_code)
             return json.dumps(response.status_code)
         
+    #Gets the image online and saves it in the cache
     def saveToCache(self, name, albumID, albumLink):
-        if self.cachePath == "":
-            self.cachePath = os.getenv("XDG_CACHE_HOME") or os.path.join(os.getenv("HOME"),".cache")
-            self.cachePath = self.cachePath + "/oriexe.Kirigami"
-        print(albumLink)
-        filePath = self.cachePath + albumID + ".png"
-        r = requests.get('https://api.github.com/events').content
-        image = BytesIO(r)
-        file = open(filePath,"rwb")
+        filePath = self.cachePath + "/" + albumID + ".png" #File path for each image
+        print(filePath)
+        r = requests.get(albumLink).content
+        image = bytes(r)
+        file = open(filePath,"wb")
         file.write(image)
-
         return filePath
             
