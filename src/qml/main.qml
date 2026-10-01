@@ -19,6 +19,9 @@ Kirigami.ApplicationWindow {
     property bool albumSelected: true
     property bool songSelected: false
 
+    ApiCalls {
+        id: apicalls
+            }
     function accessSongs()
     {
         albumSelected = false
@@ -51,7 +54,11 @@ Kirigami.ApplicationWindow {
                icon.name: "library-music-symbolic"
                checked: songSelected
                displayHint: Kirigami.DisplayHint.KeepVisible
-               onTriggered: accessSongs()
+               onTriggered: {
+                accessSongs()
+                apicalls.getAllSongs("7iE4NTzBK8uiBat73crB86")
+                }
+               
            }
         ]
     }

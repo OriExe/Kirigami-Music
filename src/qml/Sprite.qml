@@ -6,6 +6,7 @@ ColumnLayout
 {
     property var albumTextName: "Hello"
     property var imagePath: "https://demo.navidrome.org/rest/getCoverArt.view?id=al-0T2ybWQjvdxqwNOncne6N6_640a926e&u=demo&p=demo&v=1.13.0&c=AwesomeClientName&f=json"
+    property var albumID: "none"
     
     Layout.preferredWidth: 150
     Image {
@@ -14,6 +15,13 @@ ColumnLayout
         Layout.preferredHeight : 150
         fillMode: Image.PreserveAspectFit
         source: imagePath
+         MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                root.pageStack.push(Qt.resolvedUrl("AllSongsView.qml")) //Why does this only work once
+                apicalls.getAllSongs(albumID)
+                }
+        }
     }
 
     

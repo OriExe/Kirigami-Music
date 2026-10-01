@@ -16,7 +16,7 @@ class ApiCalls(QObject):
     hostserver = "https://demo.navidrome.org"
     username = "demo"
     password = "demo"
-    CLIENT = "KirigamiMusic"
+    CLIENT = "Kirigami-Music"
     """Calls the opensonic api"""
     cachePath = ""
     
@@ -41,6 +41,7 @@ class ApiCalls(QObject):
         ##Get Albums from api
         if response.status_code == 200:
             #print(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
+            #Find album main page on currentScreen
             window = globalValues.engine.rootObjects()[0]
             albumPageFunction = window.findChild(QObject, "albumPage")
             jsonResponse = response.json() ##Turn into json
@@ -54,7 +55,7 @@ class ApiCalls(QObject):
                 else:
                     imagePath = self.cachePath + "/" + x["coverArt"] + ".png"
                 #print(imageUrl)
-                albumPageFunction.createAlbumObjects(x["name"], imagePath)
+                albumPageFunction.createAlbumObjects(x["name"], imagePath,x["id"])
             return json.dumps(response.json())
         ##Run fails
         else:
@@ -70,4 +71,27 @@ class ApiCalls(QObject):
         file = open(filePath,"wb")
         file.write(image)
         return filePath
-            
+
+    @Slot(str)
+    def getAllSongs(self, albumid):
+        url = f"{self.hostserver}/rest/getAlbum.view?id={albumid}&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
+        response = requests.get(url)
+        ##Get Albums from api
+        if response.status_code == 200:
+            #print(response.json()["subsonic-response"]["albumList"]["album"][0]["name"])
+            #Find album main page on currentScreen
+            window = globalValues.engine.rootObjects()[0]
+            songPage = window.findChild(QObject, "songPage")
+            jsonResponse = response.json() ##Turn into json
+            print(jsonResponse)
+            for x in jsonResponse["subsonic-response"]["album"]["song"]:
+                #Surely there's a better way to do this
+                #songPage.albumList.append(x["name"])
+                #songPage.albumList.append("/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.png")
+                print("Name is")
+                print(x["title"])
+                songPage.pushArrayValues(jsonResponse["subsonic-response"]["album"]["name"], x["title"],"/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.png")
+        else:
+            print("Failed to retrieve data",response.status_code)
+                
+    
