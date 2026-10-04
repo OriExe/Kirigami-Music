@@ -14,7 +14,7 @@ Kirigami.ApplicationWindow {
     height: minimumHeight
 
     pageStack.initialPage: AllAlbumsView {}
-    pageStack.columnView.columnResizeMode: Kirigami.ColumnView.SingleColumn
+    //pageStack.columnView.columnResizeMode: Kirigami.ColumnView.SingleColumn
 
     property bool albumSelected: true
     property bool songSelected: false

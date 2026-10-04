@@ -6,6 +6,7 @@ import urllib.request
 import json
 import globalValues
 import os
+import re
 
 QML_IMPORT_NAME = "oriexe.KirigamiMusicPLayer"
 QML_IMPORT_MAJOR_VERSION = 1
@@ -49,11 +50,20 @@ class ApiCalls(QObject):
             for x in jsonResponse["subsonic-response"]["albumList"]["album"]:
                 imageUrl = f"{self.hostserver}/rest/getCoverArt.view?id={x["coverArt"]}&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
                 imagePath = ""
-                if not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".png"):
+                if not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".png") and not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".jpeg") and not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".jpg"):
                     print("Image doesn't exist creating it")
                     imagePath = self.saveToCache(x["name"],x["coverArt"] ,imageUrl)
                 else:
-                    imagePath = self.cachePath + "/" + x["coverArt"] + ".png"
+                    fileExtention = ""
+                    if os.path.exists(os.path.join(self.cachePath,x["coverArt"] + ".png")):
+                        fileExtention = ".png"
+                    elif os.path.exists(os.path.join(self.cachePath,x["coverArt"] + ".jpeg")):
+                        fileExtention = ".jpeg"
+                    elif os.path.exists(os.path.join(self.cachePath,x["coverArt"] + ".jpg")):
+                        fileExtention = ".jpg"
+                    else:
+                        print("No path found")
+                    imagePath = self.addFileExtention(os.path.join(self.cachePath,x["coverArt"]))
                 #print(imageUrl)
                 albumPageFunction.createAlbumObjects(x["name"], imagePath,x["id"])
             return json.dumps(response.json())
@@ -64,13 +74,7 @@ class ApiCalls(QObject):
         
     #Gets the image online and saves it in the cache
     def saveToCache(self, name, albumID, albumLink):
-        filePath = self.cachePath + "/" + albumID + ".png" #File path for each image
-        print(filePath)
-        r = requests.get(albumLink).content
-        image = bytes(r)
-        file = open(filePath,"wb")
-        file.write(image)
-        return filePath
+        return self.downloadFile(self.cachePath, albumID,albumLink)
 
     @Slot(str)
     def getAllSongs(self, albumid):
@@ -90,8 +94,34 @@ class ApiCalls(QObject):
                 #songPage.albumList.append("/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.png")
                 print("Name is")
                 print(x["title"])
-                songPage.pushArrayValues(jsonResponse["subsonic-response"]["album"]["name"], x["title"],"/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.png")
+                songPage.pushArrayValues(jsonResponse["subsonic-response"]["album"]["name"], x["title"],"/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.jpeg")
         else:
             print("Failed to retrieve data",response.status_code)
-                
     
+    @Slot()
+    def downloadSong(self, songId,albumName):
+        url = f"{self.hostserver}/rest/download.view?id={songId}&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
+        #self.downloadFile()
+    
+    ##Download any file from the internet
+    def downloadFile(self, filePath, fileName, downloadLink):
+        r = requests.get(downloadLink, stream=True)
+        fullFilePath = filePath + "/" + fileName + "." + r.headers["Content-Type"].split("/")[-1] #File path for each image
+        print(fullFilePath)
+        print(r.headers["Content-Type"].split("/")[-1])
+        #data = requests.get(downloadLink)
+        downloadedFile = bytes(r.content)
+        file = open(fullFilePath,"wb")
+        file.write(downloadedFile)
+        file.close()
+        return fullFilePath
+    
+    def addFileExtention(self, filePath):
+        if os.path.exists(os.path.join(filePath + ".png")):
+            return filePath + ".png"
+        elif os.path.exists(os.path.join(filePath + ".jpeg")):
+            return filePath + ".jpeg"
+        elif os.path.exists(os.path.join(filePath + ".jpg")):
+            return filePath + ".jpg"
+        else:
+            print("No path found")
