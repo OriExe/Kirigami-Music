@@ -14,7 +14,7 @@ Kirigami.ScrollablePage {
         sprite.albumTextName = name
         sprite.imagePath = imagePath
         sprite.albumID = albumID
-        if (sprite == null) {
+        if (sprite === null) {
             // Error Handling
             console.error("Error creating object");
         }

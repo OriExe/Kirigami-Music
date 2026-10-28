@@ -87,13 +87,15 @@ class ApiCalls(QObject):
             window = globalValues.engine.rootObjects()[0]
             songPage = window.findChild(QObject, "songPage")
             jsonResponse = response.json() ##Turn into json
-            print(jsonResponse)
+           # print(jsonResponse)
+            songPage.clearArray()
             for x in jsonResponse["subsonic-response"]["album"]["song"]:
                 #Surely there's a better way to do this
                 #songPage.albumList.append(x["name"])
                 #songPage.albumList.append("/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.png")
-                print("Name is")
-                print(x["title"])
+               # print("Name is")
+                #print(x["title"])
+              
                 songPage.pushArrayValues(jsonResponse["subsonic-response"]["album"]["name"], x["title"],"/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.jpeg")
         else:
             print("Failed to retrieve data",response.status_code)

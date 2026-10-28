@@ -11,13 +11,21 @@ Kirigami.ScrollablePage {
     title: albumName
         
     function pushArrayValues(albumNAME,songName, songImage){
-        console.error(albumName)
-        console.error(songImage)
+        // console.error(albumName)
+        // console.error(songImage)
         albumName = albumNAME
         albumList.push(songName)
         songImages.push(songImage)
+        console.error(albumList)
         integerLength = albumList.length
     }
+    function clearArray()
+    {
+        albumList = []
+        songImages = []
+    }
+
+
     Kirigami.CardsListView {
         id: view
         model: integerLength

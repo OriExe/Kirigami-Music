@@ -18,11 +18,22 @@ ColumnLayout
          MouseArea {
             anchors.fill: parent
             onClicked: {
-                root.pageStack.push(Qt.resolvedUrl("AllSongsView.qml")) //Why does this only work once
-                apicalls.getAllSongs(albumID)
+                //Get 
+                var page = pageStack.get(1)
+                console.error(page)
+                if (page === undefined)
+                {
+                    console.error("This is undefined")
+                    pageStack.push(Qt.resolvedUrl("AllSongsView.qml")); 
+                }
+                else if (page.objectName === "songPage")
+                {
+                    pageStack.currentIndex = 1
+                }
+                apicalls.getAllSongs(albumID);
                 }
         }
-    }
+    } 
 
     
     Text {
