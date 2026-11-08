@@ -9,6 +9,6 @@ It aims to allows users to
 - Download music from their library onto their pc, where the system shall only
   play the song locally unless it's deleted.
 
-Current progress as of 17/09/2026
+Current progress as of 08/11/2026
 <img width="1246" height="820" alt="image" src="https://github.com/user-attachments/assets/271204ea-0155-49fd-97b5-8058718f85af" />
 
