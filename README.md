@@ -10,4 +10,5 @@ It aims to allows users to
   play the song locally unless it's deleted.
 
 Current progress as of 17/09/2026
-<img width="1038" height="883" alt="image" src="https://github.com/user-attachments/assets/9d38dc46-1420-4d8d-88b3-e9ee8424768f" />
+<img width="1246" height="820" alt="image" src="https://github.com/user-attachments/assets/271204ea-0155-49fd-97b5-8058718f85af" />
+
