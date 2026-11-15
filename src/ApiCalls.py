@@ -2,11 +2,12 @@ from PySide6.QtCore import QObject, Signal, Slot, Property
 from PySide6.QtQml import QmlElement, QQmlComponent
 from io import BytesIO
 import requests
-import urllib.request
+import asyncio
 import json
 import globalValues
 import os
 import re
+import PySide6.QtAsyncio as QtAsyncio
 
 QML_IMPORT_NAME = "oriexe.KirigamiMusicPLayer"
 QML_IMPORT_MAJOR_VERSION = 1
@@ -47,12 +48,15 @@ class ApiCalls(QObject):
             albumPageFunction = window.findChild(QObject, "albumPage")
             jsonResponse = response.json() ##Turn into json
             ##Get album name and Image
+            counter = 0 
             for x in jsonResponse["subsonic-response"]["albumList"]["album"]:
                 imageUrl = f"{self.hostserver}/rest/getCoverArt.view?id={x["coverArt"]}&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
                 imagePath = ""
                 if not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".png") and not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".jpeg") and not os.path.exists(self.cachePath + "/" + x["coverArt"] + ".jpg"):
                     print("Image doesn't exist creating it")
-                    imagePath = self.saveToCache(x["name"],x["coverArt"] ,imageUrl)
+                    if counter != 1:
+                        counter = 1
+                        imagePath = self.saveToCache(x["name"],x["coverArt"] ,imageUrl)
                 else:
                     fileExtention = ""
                     if os.path.exists(os.path.join(self.cachePath,x["coverArt"] + ".png")):
@@ -73,8 +77,10 @@ class ApiCalls(QObject):
             return json.dumps(response.status_code)
         
     #Gets the image online and saves it in the cache
+    ##Returns the path to it
     def saveToCache(self, name, albumID, albumLink):
-        return self.downloadFile(self.cachePath, albumID,albumLink)
+        ##Return doesn't seem to work
+        return QtAsyncio.run(self.downloadFile(self.cachePath, albumID,albumLink)) 
 
     @Slot(str)
     def getAllSongs(self, albumid):
@@ -106,7 +112,7 @@ class ApiCalls(QObject):
         #self.downloadFile()
     
     ##Download any file from the internet
-    def downloadFile(self, filePath, fileName, downloadLink):
+    async def downloadFile(self, filePath, fileName, downloadLink):
         r = requests.get(downloadLink, stream=True)
         fullFilePath = filePath + "/" + fileName + "." + r.headers["Content-Type"].split("/")[-1] #File path for each image
         print(fullFilePath)

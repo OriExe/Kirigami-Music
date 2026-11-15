@@ -4,6 +4,7 @@ import signal
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtCore import QUrl
 from PySide6.QtQml import QQmlApplicationEngine
+import PySide6.QtAsyncio as QtAsyncio
 import globalValues
 from ApiCalls import ApiCalls
 
@@ -23,7 +24,8 @@ def main():
     base_path = os.path.abspath(os.path.dirname(__file__))
     url = QUrl(f"file://{base_path}/qml/main.qml")
     globalValues.engine.load(url)
-
+    QtAsyncio.run(handle_sigint=True)
+    
     if len(globalValues.engine.rootObjects()) == 0:
         quit()
 
