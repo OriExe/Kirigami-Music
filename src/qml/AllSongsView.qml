@@ -7,15 +7,17 @@ Kirigami.ScrollablePage {
     property var albumName: "All Songs"
     property var albumList: []
     property var songImages: []
+    property var songIds: []
     property var integerLength: 0
     title: albumName
         
-    function pushArrayValues(albumNAME,songName, songImage){
+    function pushArrayValues(albumNAME,songName, songImage, songID){
         // console.error(albumName)
         // console.error(songImage)
         albumName = albumNAME
         albumList.push(songName)
         songImages.push(songImage)
+        songIds.push(songID)
         console.error(albumList)
         integerLength = albumList.length
     }
@@ -23,6 +25,7 @@ Kirigami.ScrollablePage {
     {
         albumList = []
         songImages = []
+        songIds = []
     }
 
 
@@ -60,6 +63,10 @@ Kirigami.ScrollablePage {
                         Layout.alignment: Qt.AlignRight
                         Layout.columnSpan: 2 
                         text: qsTr("Install")
+                        onClicked:
+                        {
+                           apicalls.downloadSong(songIds[modelData]) 
+                        } 
                     }
                 }
             }

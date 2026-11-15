@@ -102,13 +102,14 @@ class ApiCalls(QObject):
                # print("Name is")
                 #print(x["title"])
               
-                songPage.pushArrayValues(jsonResponse["subsonic-response"]["album"]["name"], x["title"],"/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.jpeg")
+                songPage.pushArrayValues(jsonResponse["subsonic-response"]["album"]["name"], x["title"],"/home/z7/.cache/oriexe-Kirigami/al-77FBd5orlEFByzriDngu35_7d9c4f98fa2cb15a.jpeg",x["id"] )
         else:
             print("Failed to retrieve data",response.status_code)
     
-    @Slot()
-    def downloadSong(self, songId,albumName):
+    @Slot(str)
+    def downloadSong(self, songId):
         url = f"{self.hostserver}/rest/download.view?id={songId}&u={self.username}&p={self.password}&v=1.16.1.0&c={self.CLIENT}&f=json"
+        print(url)
         #self.downloadFile()
     
     ##Download any file from the internet
@@ -124,6 +125,7 @@ class ApiCalls(QObject):
         file.close()
         return fullFilePath
     
+    ##Finds scored files and outputs the correct extention
     def addFileExtention(self, filePath):
         if os.path.exists(os.path.join(filePath + ".png")):
             return filePath + ".png"
